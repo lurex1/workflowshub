@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Edit, Trash2, Upload } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { DeveloperProfile } from '@/components/DeveloperProfile';
 
 interface Product {
   id: string;
@@ -136,10 +137,15 @@ const DeveloperDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pt-24">
+        {/* Developer Profile Section */}
+        <div className="mb-8">
+          <DeveloperProfile />
+        </div>
+
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Panel Developera</h1>
+            <h1 className="text-4xl font-bold mb-2 text-gradient">Moje Produkty</h1>
             <p className="text-muted-foreground">
               Zarządzaj swoimi automatyzacjami
             </p>
