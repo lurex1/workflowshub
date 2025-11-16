@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Zap } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isDeveloper, setIsDeveloper] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -57,9 +59,20 @@ const Auth = () => {
             toast.error(error.message);
           }
         } else {
+          // If user selected developer role, add it to their roles
+          if (isDeveloper) {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await supabase.from('user_roles').insert({
+                user_id: user.id,
+                role: 'developer'
+              });
+            }
+          }
           toast.success("Konto utworzone! Zaloguj się.");
           setIsSignUp(false);
           setPassword("");
+          setIsDeveloper(false);
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -131,6 +144,22 @@ const Auth = () => {
               minLength={6}
             />
           </div>
+
+          {isSignUp && (
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="developer"
+                checked={isDeveloper}
+                onCheckedChange={(checked) => setIsDeveloper(checked === true)}
+              />
+              <Label
+                htmlFor="developer"
+                className="text-sm font-normal cursor-pointer"
+              >
+                Zarejestruj mnie jako developer (mogę dodawać produkty)
+              </Label>
+            </div>
+          )}
 
           <Button type="submit" className="w-full glow-effect" disabled={loading}>
             {loading ? "Ładowanie..." : isSignUp ? "Zarejestruj się" : "Zaloguj"}
