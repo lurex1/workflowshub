@@ -16,36 +16,65 @@ export type Database = {
     Tables: {
       products: {
         Row: {
+          category: string
           created_at: string | null
+          creator_id: string | null
           description: string
           id: string
           instructions_url: string | null
           json_file_url: string | null
           name: string
+          preview_image_url: string | null
           price_basic: number
           price_premium: number
+          rating: number | null
+          sales_count: number | null
+          status: string
+          tags: string[] | null
         }
         Insert: {
+          category?: string
           created_at?: string | null
+          creator_id?: string | null
           description: string
           id?: string
           instructions_url?: string | null
           json_file_url?: string | null
           name: string
+          preview_image_url?: string | null
           price_basic: number
           price_premium: number
+          rating?: number | null
+          sales_count?: number | null
+          status?: string
+          tags?: string[] | null
         }
         Update: {
+          category?: string
           created_at?: string | null
+          creator_id?: string | null
           description?: string
           id?: string
           instructions_url?: string | null
           json_file_url?: string | null
           name?: string
+          preview_image_url?: string | null
           price_basic?: number
           price_premium?: number
+          rating?: number | null
+          sales_count?: number | null
+          status?: string
+          tags?: string[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -68,6 +97,7 @@ export type Database = {
       purchases: {
         Row: {
           created_at: string | null
+          download_count: number | null
           id: string
           product_id: string
           purchase_type: string
@@ -77,6 +107,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          download_count?: number | null
           id?: string
           product_id: string
           purchase_type: string
@@ -86,6 +117,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          download_count?: number | null
           id?: string
           product_id?: string
           purchase_type?: string
@@ -103,15 +135,50 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "customer" | "developer" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -238,6 +305,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["customer", "developer", "admin"],
+    },
   },
 } as const

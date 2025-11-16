@@ -1,28 +1,10 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Zap } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
-import { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
+import { Button } from "./ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { LogOut, User, Zap } from "lucide-react";
 
 export const Navbar = () => {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
+  const { user, hasRole, signOut } = useAuth();
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-lg border-b border-border">
@@ -38,15 +20,33 @@ export const Navbar = () => {
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <Link to="/dashboard">
-                  <Button variant="ghost">Dashboard</Button>
+                <Link to="/marketplace">
+                  <Button variant="ghost">Marketplace</Button>
                 </Link>
-                <Button variant="outline" onClick={handleSignOut}>
+                {hasRole('customer') && (
+                  <Link to="/dashboard">
+                    <Button variant="ghost">Moje Zakupy</Button>
+                  </Link>
+                )}
+                {hasRole('developer') && (
+                  <Link to="/developer">
+                    <Button variant="ghost">Panel Developera</Button>
+                  </Link>
+                )}
+                <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-muted">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm">{user.email}</span>
+                </div>
+                <Button variant="outline" onClick={signOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
                   Wyloguj
                 </Button>
               </>
             ) : (
               <>
+                <Link to="/marketplace">
+                  <Button variant="ghost">Marketplace</Button>
+                </Link>
                 <Link to="/auth">
                   <Button variant="ghost">Zaloguj</Button>
                 </Link>
