@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Star, Search } from 'lucide-react';
+import { ShoppingCart, Star, Search, Zap, TrendingUp } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import heroImage from '@/assets/marketplace-hero.jpg';
 
 interface Product {
   id: string;
@@ -73,7 +74,7 @@ const Marketplace = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 pt-24">
           <p className="text-center">Ładowanie...</p>
         </div>
       </div>
@@ -83,13 +84,44 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Marketplace Automatyzacji</h1>
-          <p className="text-muted-foreground">
-            Gotowe rozwiązania AI i workflowów od profesjonalnych twórców
-          </p>
+      
+      {/* Hero Section */}
+      <div className="relative overflow-hidden pt-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-background"></div>
+        <div className="relative">
+          <img 
+            src={heroImage} 
+            alt="AI Automation Marketplace" 
+            className="w-full h-[400px] object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center max-w-4xl px-4">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Zap className="h-8 w-8 text-primary" />
+                <h1 className="text-5xl md:text-6xl font-bold text-gradient">
+                  Marketplace Automatyzacji
+                </h1>
+              </div>
+              <p className="text-xl text-muted-foreground mb-6">
+                Gotowe rozwiązania AI i workflowów od profesjonalnych twórców
+              </p>
+              <div className="flex items-center justify-center gap-8 text-sm">
+                <div className="flex items-center gap-2">
+                  <Star className="h-5 w-5 text-primary" />
+                  <span>Zweryfikowani twórcy</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  <span>Natychmiastowy dostęp</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
@@ -116,57 +148,61 @@ const Marketplace = () => {
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-            <Card key={product.id} className="flex flex-col">
+            <Card key={product.id} className="group flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-border/50">
               {product.preview_image_url && (
-                <div className="w-full h-48 bg-muted rounded-t-lg overflow-hidden">
+                <div className="relative w-full h-56 bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
                   <img
                     src={product.preview_image_url}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-primary/90 backdrop-blur-sm text-primary-foreground border-0">
+                      {product.category}
+                    </Badge>
+                  </div>
                 </div>
               )}
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-xl">{product.name}</CardTitle>
-                  <Badge variant="secondary">{product.category}</Badge>
-                </div>
-                <CardDescription className="line-clamp-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                  {product.name}
+                </CardTitle>
+                <CardDescription className="line-clamp-2 text-sm">
                   {product.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex-1">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="ml-1 text-sm">{product.rating.toFixed(1)}</span>
+              <CardContent className="flex-1 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 bg-accent/10 px-2 py-1 rounded">
+                    <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                    <span className="text-sm font-semibold">{product.rating.toFixed(1)}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    • {product.sales_count} sprzedaży
+                  <span className="text-xs text-muted-foreground">
+                    {product.sales_count} sprzedaży
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {product.tags?.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
+                    <Badge key={tag} variant="outline" className="text-xs border-border/50">
                       {tag}
                     </Badge>
                   ))}
                 </div>
               </CardContent>
-              <CardFooter className="flex flex-col gap-2">
+              <CardFooter className="flex flex-col gap-2 pt-0">
                 <Button
                   onClick={() => handlePurchase(product.id, 'basic')}
                   variant="outline"
-                  className="w-full"
+                  className="w-full hover:bg-muted/50"
                 >
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Basic - {product.price_basic} PLN
                 </Button>
                 <Button
                   onClick={() => handlePurchase(product.id, 'premium')}
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
                 >
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Premium - {product.price_premium} PLN
