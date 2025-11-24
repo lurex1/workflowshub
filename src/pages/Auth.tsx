@@ -27,11 +27,22 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(searchParams.get("mode") === "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isDeveloper, setIsDeveloper] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   useEffect(() => {
+    // Check if user is coming from password reset link
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+    
+    if (type === 'recovery') {
+      setIsUpdatingPassword(true);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/dashboard");
@@ -50,7 +61,7 @@ const Auth = () => {
     setLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth?mode=reset`,
+        redirectTo: `${window.location.origin}/auth`,
       });
 
       if (error) {
@@ -58,6 +69,46 @@ const Auth = () => {
       } else {
         toast.success("Link do resetowania hasła został wysłany na Twój email!");
         setIsResettingPassword(false);
+      }
+    } catch (error) {
+      toast.error("Wystąpił błąd. Spróbuj ponownie.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      toast.error("Hasła nie są identyczne");
+      return;
+    }
+
+    // Validate password
+    const validation = authSchema.safeParse({ email: "dummy@email.com", password });
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      if (firstError.path[0] === 'password') {
+        toast.error(firstError.message);
+        return;
+      }
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: password,
+      });
+
+      if (error) {
+        toast.error("Błąd podczas zmiany hasła: " + error.message);
+      } else {
+        toast.success("Hasło zostało zmienione! Możesz się teraz zalogować.");
+        setIsUpdatingPassword(false);
+        setPassword("");
+        setConfirmPassword("");
+        navigate("/dashboard");
       }
     } catch (error) {
       toast.error("Wystąpił błąd. Spróbuj ponownie.");
@@ -148,17 +199,60 @@ const Auth = () => {
         </Link>
 
         <h2 className="text-3xl font-bold mb-2 text-center">
-          {isResettingPassword ? "Resetuj hasło" : isSignUp ? "Utwórz konto" : "Zaloguj się"}
+          {isUpdatingPassword 
+            ? "Ustaw nowe hasło" 
+            : isResettingPassword 
+            ? "Resetuj hasło" 
+            : isSignUp 
+            ? "Utwórz konto" 
+            : "Zaloguj się"}
         </h2>
         <p className="text-muted-foreground text-center mb-8">
-          {isResettingPassword
+          {isUpdatingPassword
+            ? "Wprowadź nowe, bezpieczne hasło"
+            : isResettingPassword
             ? "Wyślemy Ci link do zresetowania hasła"
             : isSignUp
             ? "Rozpocznij automatyzację już dziś"
             : "Witaj z powrotem!"}
         </p>
 
-        {isResettingPassword ? (
+        {isUpdatingPassword ? (
+          <form onSubmit={handleUpdatePassword} className="space-y-4">
+            <div>
+              <Label htmlFor="new-password">Nowe hasło</Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={8}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Min. 8 znaków, mała i wielka litera, cyfra
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="confirm-password">Potwierdź hasło</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={8}
+              />
+            </div>
+
+            <Button type="submit" className="w-full glow-effect" disabled={loading}>
+              {loading ? "Zapisywanie..." : "Zmień hasło"}
+            </Button>
+          </form>
+        ) : isResettingPassword ? (
           <form onSubmit={handlePasswordReset} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
@@ -247,7 +341,7 @@ const Auth = () => {
         </form>
         )}
 
-        {!isResettingPassword && (
+        {!isResettingPassword && !isUpdatingPassword && (
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsSignUp(!isSignUp)}
