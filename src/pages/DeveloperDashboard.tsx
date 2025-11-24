@@ -45,6 +45,7 @@ const DeveloperDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({});
+  const [stripeConnected, setStripeConnected] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -62,8 +63,24 @@ const DeveloperDashboard = () => {
       navigate('/');
       return;
     }
+    checkStripeStatus();
     loadProducts();
   }, [hasRole, navigate]);
+
+  const checkStripeStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('stripe_account_id')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+      setStripeConnected(!!data?.stripe_account_id);
+    } catch (error) {
+      console.error('Error checking Stripe status:', error);
+    }
+  };
 
   const loadProducts = async () => {
     try {
@@ -229,6 +246,26 @@ const DeveloperDashboard = () => {
         <div className="mb-8">
           <DeveloperProfile />
         </div>
+
+        {/* Stripe Connect Warning */}
+        {!stripeConnected && (
+          <Card className="mb-8 border-orange-500/50 bg-orange-500/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                ⚠️ Podłącz konto Stripe
+              </CardTitle>
+              <CardDescription>
+                Aby otrzymywać płatności za swoje produkty, musisz połączyć konto Stripe Connect. 
+                Będziesz otrzymywać 90% z każdej sprzedaży bezpośrednio na swoje konto.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => navigate('/stripe-onboarding')} className="glow-effect">
+                Połącz Stripe Connect
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="flex items-center justify-between mb-8">
           <div>

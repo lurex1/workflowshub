@@ -87,6 +87,7 @@ export type Database = {
           id: string
           linkedin_url: string | null
           location: string | null
+          stripe_account_id: string | null
           twitter_url: string | null
           website: string | null
         }
@@ -100,6 +101,7 @@ export type Database = {
           id: string
           linkedin_url?: string | null
           location?: string | null
+          stripe_account_id?: string | null
           twitter_url?: string | null
           website?: string | null
         }
@@ -113,6 +115,7 @@ export type Database = {
           id?: string
           linkedin_url?: string | null
           location?: string | null
+          stripe_account_id?: string | null
           twitter_url?: string | null
           website?: string | null
         }

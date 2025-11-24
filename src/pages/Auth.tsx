@@ -139,6 +139,9 @@ const Auth = () => {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              is_developer: isDeveloper, // Store in metadata for trigger
+            }
           },
         });
 
@@ -149,17 +152,7 @@ const Auth = () => {
             toast.error(error.message);
           }
         } else {
-          // If user selected developer role, add it to their roles
-          if (isDeveloper) {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              await supabase.from('user_roles').insert({
-                user_id: user.id,
-                role: 'developer'
-              });
-            }
-          }
-          toast.success("Konto utworzone! Zaloguj się.");
+          toast.success("Konto utworzone! Możesz się teraz zalogować.");
           setIsSignUp(false);
           setPassword("");
           setIsDeveloper(false);
