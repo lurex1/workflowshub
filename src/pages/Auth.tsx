@@ -29,6 +29,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isDeveloper, setIsDeveloper] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,6 +38,33 @@ const Auth = () => {
       }
     });
   }, [navigate]);
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast.error("Podaj adres email");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?mode=reset`,
+      });
+
+      if (error) {
+        toast.error("Błąd podczas wysyłania emaila: " + error.message);
+      } else {
+        toast.success("Link do resetowania hasła został wysłany na Twój email!");
+        setIsResettingPassword(false);
+      }
+    } catch (error) {
+      toast.error("Wystąpił błąd. Spróbuj ponownie.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,15 +148,46 @@ const Auth = () => {
         </Link>
 
         <h2 className="text-3xl font-bold mb-2 text-center">
-          {isSignUp ? "Utwórz konto" : "Zaloguj się"}
+          {isResettingPassword ? "Resetuj hasło" : isSignUp ? "Utwórz konto" : "Zaloguj się"}
         </h2>
         <p className="text-muted-foreground text-center mb-8">
-          {isSignUp
+          {isResettingPassword
+            ? "Wyślemy Ci link do zresetowania hasła"
+            : isSignUp
             ? "Rozpocznij automatyzację już dziś"
             : "Witaj z powrotem!"}
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {isResettingPassword ? (
+          <form onSubmit={handlePasswordReset} className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="twoj@email.pl"
+                required
+              />
+            </div>
+
+            <Button type="submit" className="w-full glow-effect" disabled={loading}>
+              {loading ? "Wysyłanie..." : "Wyślij link do resetowania"}
+            </Button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setIsResettingPassword(false)}
+                className="text-primary hover:underline text-sm"
+              >
+                Powrót do logowania
+              </button>
+            </div>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -173,18 +232,33 @@ const Auth = () => {
           <Button type="submit" className="w-full glow-effect" disabled={loading}>
             {loading ? "Ładowanie..." : isSignUp ? "Zarejestruj się" : "Zaloguj"}
           </Button>
-        </form>
 
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-primary hover:underline"
-          >
-            {isSignUp
-              ? "Masz już konto? Zaloguj się"
-              : "Nie masz konta? Zarejestruj się"}
-          </button>
-        </div>
+          {!isSignUp && (
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setIsResettingPassword(true)}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Zapomniałeś hasła?
+              </button>
+            </div>
+          )}
+        </form>
+        )}
+
+        {!isResettingPassword && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-primary hover:underline"
+            >
+              {isSignUp
+                ? "Masz już konto? Zaloguj się"
+                : "Nie masz konta? Zarejestruj się"}
+            </button>
+          </div>
+        )}
       </Card>
     </div>
   );
