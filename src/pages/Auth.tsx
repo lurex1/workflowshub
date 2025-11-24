@@ -218,17 +218,19 @@ const Auth = () => {
         </p>
 
         {isUpdatingPassword ? (
-          <form onSubmit={handleUpdatePassword} className="space-y-4">
+          <form onSubmit={handleUpdatePassword} className="space-y-4" autoComplete="off">
             <div>
               <Label htmlFor="new-password">Nowe hasło</Label>
               <Input
                 id="new-password"
+                name="new-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
                 minLength={8}
+                autoComplete="new-password"
               />
               <p className="text-xs text-muted-foreground mt-1">
                 Min. 8 znaków, mała i wielka litera, cyfra
@@ -239,12 +241,14 @@ const Auth = () => {
               <Label htmlFor="confirm-password">Potwierdź hasło</Label>
               <Input
                 id="confirm-password"
+                name="confirm-password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
                 required
                 minLength={8}
+                autoComplete="new-password"
               />
             </div>
 
