@@ -9,6 +9,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Camera, Globe, Github, Linkedin, Twitter, MapPin, Pencil } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { z } from "zod";
+
+const profileSchema = z.object({
+  display_name: z.string().trim().max(100, { message: "Nazwa może mieć maksymalnie 100 znaków" }).nullable(),
+  bio: z.string().trim().max(500, { message: "Bio może mieć maksymalnie 500 znaków" }).nullable(),
+  location: z.string().trim().max(100, { message: "Lokalizacja może mieć maksymalnie 100 znaków" }).nullable(),
+  website: z.string().trim().url({ message: "Nieprawidłowy URL" }).max(255).nullable().or(z.literal('')),
+  github_url: z.string().trim().url({ message: "Nieprawidłowy URL GitHub" }).max(255).nullable().or(z.literal('')),
+  linkedin_url: z.string().trim().url({ message: "Nieprawidłowy URL LinkedIn" }).max(255).nullable().or(z.literal('')),
+  twitter_url: z.string().trim().url({ message: "Nieprawidłowy URL Twitter" }).max(255).nullable().or(z.literal('')),
+}).transform((data) => ({
+  ...data,
+  website: data.website || null,
+  github_url: data.github_url || null,
+  linkedin_url: data.linkedin_url || null,
+  twitter_url: data.twitter_url || null,
+}));
 
 interface ProfileData {
   avatar_url: string | null;
@@ -113,9 +130,17 @@ export const DeveloperProfile = () => {
   const handleSaveProfile = async () => {
     if (!user) return;
 
+    // Validate profile data
+    const validation = profileSchema.safeParse(profile);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
+      return;
+    }
+
     const { error } = await supabase
       .from("profiles")
-      .update(profile)
+      .update(validation.data)
       .eq("id", user.id);
 
     if (error) {
