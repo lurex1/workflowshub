@@ -13,6 +13,16 @@ import { Plus, Edit, Trash2, Upload } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { DeveloperProfile } from '@/components/DeveloperProfile';
+import { z } from 'zod';
+
+const productSchema = z.object({
+  name: z.string().trim().min(3, { message: "Nazwa musi mieć minimum 3 znaki" }).max(100, { message: "Nazwa może mieć maksymalnie 100 znaków" }),
+  description: z.string().trim().min(10, { message: "Opis musi mieć minimum 10 znaków" }).max(1000, { message: "Opis może mieć maksymalnie 1000 znaków" }),
+  price_basic: z.number().positive({ message: "Cena musi być dodatnia" }).max(999999, { message: "Cena jest zbyt wysoka" }),
+  price_premium: z.number().positive({ message: "Cena musi być dodatnia" }).max(999999, { message: "Cena jest zbyt wysoka" }),
+  category: z.enum(['crm', 'marketing', 'sales', 'hr', 'other'], { message: "Nieprawidłowa kategoria" }),
+  tags: z.array(z.string().trim().min(1).max(50)).max(10, { message: "Maksymalnie 10 tagów" }),
+});
 
 interface Product {
   id: string;
@@ -77,13 +87,34 @@ const DeveloperDashboard = () => {
     e.preventDefault();
     
     try {
-      const { error } = await supabase.from('products').insert({
+      // Parse and validate input
+      const tags = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
+      const validation = productSchema.safeParse({
         name: formData.name,
         description: formData.description,
         price_basic: parseFloat(formData.price_basic),
         price_premium: parseFloat(formData.price_premium),
         category: formData.category,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+        tags,
+      });
+
+      if (!validation.success) {
+        const firstError = validation.error.errors[0];
+        toast({
+          title: 'Błąd walidacji',
+          description: firstError.message,
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const { error } = await supabase.from('products').insert({
+        name: validation.data.name,
+        description: validation.data.description,
+        price_basic: validation.data.price_basic,
+        price_premium: validation.data.price_premium,
+        category: validation.data.category,
+        tags: validation.data.tags,
         creator_id: user?.id,
         status: 'pending',
       });

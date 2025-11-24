@@ -9,6 +9,17 @@ import { Zap } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { z } from "zod";
+
+const authSchema = z.object({
+  email: z.string().trim().email({ message: "Nieprawidłowy adres email" }),
+  password: z.string()
+    .min(8, { message: "Hasło musi mieć minimum 8 znaków" })
+    .max(72, { message: "Hasło może mieć maksymalnie 72 znaki" })
+    .regex(/[a-z]/, { message: "Hasło musi zawierać małą literę" })
+    .regex(/[A-Z]/, { message: "Hasło musi zawierać wielką literę" })
+    .regex(/[0-9]/, { message: "Hasło musi zawierać cyfrę" }),
+});
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -30,13 +41,11 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast.error("Wypełnij wszystkie pola");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Hasło musi mieć minimum 6 znaków");
+    // Validate input with zod
+    const validation = authSchema.safeParse({ email, password });
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
