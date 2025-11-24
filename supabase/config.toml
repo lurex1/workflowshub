@@ -1,1 +1,10 @@
 project_id = "mzehmfoxgfbmkteppcpg"
+
+[functions.create-checkout]
+verify_jwt = true
+
+[functions.verify-payment]
+verify_jwt = true
+
+[functions.create-purchase]
+verify_jwt = true
