@@ -30,7 +30,12 @@ export const Navbar = () => {
                 )}
                 {hasRole('developer') && (
                   <Link to="/developer">
-                    <Button variant="ghost">Panel Developera</Button>
+                    <Button variant="ghost" className="relative">
+                      Panel Developera
+                      <span className="ml-2 px-2 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
+                        DEV
+                      </span>
+                    </Button>
                   </Link>
                 )}
                 <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-muted">
