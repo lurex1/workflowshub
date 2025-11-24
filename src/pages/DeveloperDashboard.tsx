@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { Plus, Edit, Trash2, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Upload, File, FileText, Image as ImageIcon } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { DeveloperProfile } from '@/components/DeveloperProfile';
@@ -36,12 +36,15 @@ interface Product {
   sales_count: number;
   json_file_url: string | null;
   instructions_url: string | null;
+  preview_image_url: string | null;
 }
 
 const DeveloperDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -145,6 +148,59 @@ const DeveloperDashboard = () => {
     }
   };
 
+  const handleFileUpload = async (
+    productId: string, 
+    file: File, 
+    fileType: 'json' | 'instructions' | 'preview'
+  ) => {
+    try {
+      setUploadingFiles(prev => ({ ...prev, [productId + fileType]: true }));
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${productId}/${fileType}-${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('automation-files')
+        .upload(fileName, file, { 
+          upsert: true,
+          contentType: file.type 
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('automation-files')
+        .getPublicUrl(fileName);
+
+      const updateField = 
+        fileType === 'json' ? 'json_file_url' : 
+        fileType === 'instructions' ? 'instructions_url' : 
+        'preview_image_url';
+
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({ [updateField]: publicUrl })
+        .eq('id', productId);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: 'Plik dodany!',
+        description: 'Plik został pomyślnie przesłany',
+      });
+
+      loadProducts();
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({
+        title: 'Błąd uploadu',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingFiles(prev => ({ ...prev, [productId + fileType]: false }));
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const variants: Record<string, 'default' | 'secondary' | 'destructive'> = {
       pending: 'secondary',
@@ -179,6 +235,9 @@ const DeveloperDashboard = () => {
             <h1 className="text-4xl font-bold mb-2 text-gradient">Moje Produkty</h1>
             <p className="text-muted-foreground">
               Zarządzaj swoimi automatyzacjami
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              💡 HermesHub pobiera 10% prowizji od każdej sprzedaży
             </p>
           </div>
           <Button onClick={() => setShowForm(!showForm)}>
@@ -301,7 +360,7 @@ const DeveloperDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                   <div>
                     <p className="text-muted-foreground">Kategoria</p>
                     <p className="font-medium">{product.category}</p>
@@ -319,6 +378,133 @@ const DeveloperDashboard = () => {
                     <p className="font-medium">{product.sales_count}</p>
                   </div>
                 </div>
+
+                {/* File Upload Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t">
+                  <div>
+                    <Label className="text-xs mb-2 block">Plik JSON (workflow)</Label>
+                    {product.json_file_url ? (
+                      <div className="flex items-center gap-2">
+                        <File className="h-4 w-4 text-green-500" />
+                        <span className="text-xs text-muted-foreground">Dodano</span>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer">
+                        <Input
+                          type="file"
+                          accept=".json"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleFileUpload(product.id, file, 'json');
+                          }}
+                        />
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          disabled={uploadingFiles[product.id + 'json']}
+                          type="button"
+                          onClick={(e) => {
+                            e.currentTarget.previousElementSibling?.querySelector('input')?.click();
+                          }}
+                        >
+                          {uploadingFiles[product.id + 'json'] ? (
+                            'Uploading...'
+                          ) : (
+                            <>
+                              <Upload className="h-3 w-3 mr-1" />
+                              Upload JSON
+                            </>
+                          )}
+                        </Button>
+                      </label>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className="text-xs mb-2 block">Instrukcje (PDF)</Label>
+                    {product.instructions_url ? (
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-green-500" />
+                        <span className="text-xs text-muted-foreground">Dodano</span>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer">
+                        <Input
+                          type="file"
+                          accept=".pdf"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleFileUpload(product.id, file, 'instructions');
+                          }}
+                        />
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          disabled={uploadingFiles[product.id + 'instructions']}
+                          type="button"
+                          onClick={(e) => {
+                            e.currentTarget.previousElementSibling?.querySelector('input')?.click();
+                          }}
+                        >
+                          {uploadingFiles[product.id + 'instructions'] ? (
+                            'Uploading...'
+                          ) : (
+                            <>
+                              <Upload className="h-3 w-3 mr-1" />
+                              Upload PDF
+                            </>
+                          )}
+                        </Button>
+                      </label>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label className="text-xs mb-2 block">Obraz podglądowy</Label>
+                    {product.preview_image_url ? (
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="h-4 w-4 text-green-500" />
+                        <span className="text-xs text-muted-foreground">Dodano</span>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleFileUpload(product.id, file, 'preview');
+                          }}
+                        />
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          disabled={uploadingFiles[product.id + 'preview']}
+                          type="button"
+                          onClick={(e) => {
+                            e.currentTarget.previousElementSibling?.querySelector('input')?.click();
+                          }}
+                        >
+                          {uploadingFiles[product.id + 'preview'] ? (
+                            'Uploading...'
+                          ) : (
+                            <>
+                              <Upload className="h-3 w-3 mr-1" />
+                              Upload IMG
+                            </>
+                          )}
+                        </Button>
+                      </label>
+                    )}
+                  </div>
+                </div>
+
                 {product.tags && product.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-4">
                     {product.tags.map((tag) => (

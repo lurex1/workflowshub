@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, Star, Search, Zap, TrendingUp } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import heroImage from '@/assets/marketplace-hero.jpg';
+import { useSearchParams } from 'react-router-dom';
 
 interface Product {
   id: string;
@@ -30,10 +31,55 @@ const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     loadProducts();
+    
+    // Check for payment success and verify
+    const sessionId = searchParams.get('session_id');
+    if (searchParams.get('success') && sessionId) {
+      verifyPayment(sessionId);
+      // Remove params from URL
+      searchParams.delete('success');
+      searchParams.delete('session_id');
+      setSearchParams(searchParams);
+    } else if (searchParams.get('canceled')) {
+      toast({
+        title: 'Płatność anulowana',
+        description: 'Możesz spróbować ponownie w każdej chwili.',
+        variant: 'destructive',
+      });
+      // Remove canceled param from URL
+      searchParams.delete('canceled');
+      setSearchParams(searchParams);
+    }
   }, []);
+
+  const verifyPayment = async (sessionId: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data, error } = await supabase.functions.invoke('verify-payment', {
+        body: { session_id: sessionId }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Płatność zakończona!',
+        description: 'Dziękujemy za zakup. Przejdź do dashboard aby pobrać pliki.',
+      });
+    } catch (error) {
+      console.error('Verification error:', error);
+      toast({
+        title: 'Błąd weryfikacji',
+        description: 'Skontaktuj się z supportem jeśli płatność została pobrana.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const loadProducts = async () => {
     try {
@@ -64,10 +110,35 @@ const Marketplace = () => {
   });
 
   const handlePurchase = async (productId: string, purchaseType: 'basic' | 'premium') => {
-    toast({
-      title: 'Przekierowanie do płatności...',
-    });
-    // TODO: Implement payment flow
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: 'Zaloguj się',
+          description: 'Musisz być zalogowany, aby dokonać zakupu',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { product_id: productId, purchase_type: purchaseType }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Purchase error:', error);
+      toast({
+        title: 'Błąd',
+        description: 'Nie udało się rozpocząć procesu płatności',
+        variant: 'destructive',
+      });
+    }
   };
 
   if (loading) {
