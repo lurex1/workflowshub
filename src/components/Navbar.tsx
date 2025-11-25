@@ -14,7 +14,7 @@ export const Navbar = () => {
             <div className="p-2 rounded-lg bg-primary/10 glow-effect">
               <Zap className="w-6 h-6 text-primary" />
             </div>
-            <span className="text-xl font-bold text-gradient">HermesHub</span>
+            <span className="text-xl font-bold text-gradient">MercuryHub</span>
           </Link>
 
           <div className="flex items-center gap-4">
