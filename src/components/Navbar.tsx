@@ -23,12 +23,7 @@ export const Navbar = () => {
                 <Link to="/marketplace">
                   <Button variant="ghost">Marketplace</Button>
                 </Link>
-                {hasRole('customer') && (
-                  <Link to="/dashboard">
-                    <Button variant="ghost">Moje Zakupy</Button>
-                  </Link>
-                )}
-                {hasRole('developer') && (
+                {hasRole('developer') ? (
                   <Link to="/developer">
                     <Button variant="ghost" className="relative">
                       Panel Developera
@@ -36,6 +31,10 @@ export const Navbar = () => {
                         DEV
                       </span>
                     </Button>
+                  </Link>
+                ) : hasRole('customer') && (
+                  <Link to="/dashboard">
+                    <Button variant="ghost">Moje Zakupy</Button>
                   </Link>
                 )}
                 <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-muted">
