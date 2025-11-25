@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Check, Zap, Download, Rocket, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import platformFlow from "@/assets/platform-flow.jpg";
+import marketplaceHero from "@/assets/marketplace-hero.jpg";
 
 const Index = () => {
   return (
@@ -46,13 +47,22 @@ const Index = () => {
       </section>
 
       {/* Platform Flow Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-        <div className="container mx-auto">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 relative">
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `url(${marketplaceHero})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        <div className="container mx-auto relative z-10">
           <h2 className="text-4xl font-bold text-center mb-12">
             Jak działa <span className="text-gradient">nasza platforma?</span>
           </h2>
           
-          <div className="max-w-5xl mx-auto mb-16 rounded-xl overflow-hidden border border-primary/20 shadow-2xl">
+          <div className="max-w-5xl mx-auto mb-16 rounded-xl overflow-hidden border border-primary/20 shadow-2xl bg-background/80 backdrop-blur-sm">
             <img 
               src={platformFlow} 
               alt="Platform Flow Diagram" 
