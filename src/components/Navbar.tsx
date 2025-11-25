@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut, User, Zap } from "lucide-react";
+import { LogOut, User } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export const Navbar = () => {
   const { user, hasRole, signOut } = useAuth();
@@ -10,11 +11,8 @@ export const Navbar = () => {
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10 glow-effect">
-              <Zap className="w-6 h-6 text-primary" />
-            </div>
-            <span className="text-xl font-bold text-gradient">MercuryHub</span>
+          <Link to="/" className="flex items-center gap-3">
+            <img src={logo} alt="MercuryHub" className="h-10 w-auto" />
           </Link>
 
           <div className="flex items-center gap-4">
