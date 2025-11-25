@@ -42,15 +42,17 @@ const Auth = () => {
     
     if (type === 'recovery') {
       setIsUpdatingPassword(true);
+      // Don't check session or redirect - user needs to set new password first
       return;
     }
 
+    // Only redirect if not in password reset flow
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+      if (session && !isUpdatingPassword) {
         navigate("/dashboard");
       }
     });
-  }, [navigate]);
+  }, [navigate, isUpdatingPassword]);
 
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,7 +112,8 @@ const Auth = () => {
         setIsUpdatingPassword(false);
         setPassword("");
         setConfirmPassword("");
-        navigate("/dashboard");
+        // Clear hash and show login form
+        window.history.replaceState(null, '', '/auth');
       }
     } catch (error) {
       toast.error("Wystąpił błąd. Spróbuj ponownie.");
@@ -190,7 +193,7 @@ const Auth = () => {
           <div className="p-2 rounded-lg bg-primary/10 glow-effect">
             <Zap className="w-6 h-6 text-primary" />
           </div>
-          <span className="text-2xl font-bold text-gradient">HermesHub</span>
+          <span className="text-2xl font-bold text-gradient">MercuryHub</span>
         </Link>
 
         <h2 className="text-3xl font-bold mb-2 text-center">
