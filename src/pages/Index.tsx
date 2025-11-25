@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, Zap, Download, Rocket, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import platformFlow from "@/assets/platform-flow.jpg";
 
 const Index = () => {
   return (
@@ -40,6 +41,23 @@ const Index = () => {
                 Zobacz cennik
               </Button>
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Flow Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <div className="container mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-12">
+            Jak działa <span className="text-gradient">nasza platforma?</span>
+          </h2>
+          
+          <div className="max-w-5xl mx-auto mb-16 rounded-xl overflow-hidden border border-primary/20 shadow-2xl">
+            <img 
+              src={platformFlow} 
+              alt="Platform Flow Diagram" 
+              className="w-full h-auto"
+            />
           </div>
         </div>
       </section>
