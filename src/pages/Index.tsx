@@ -244,10 +244,15 @@ const Index = () => {
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Zap className="w-6 h-6 text-primary" />
-            <span className="text-xl font-bold text-gradient">HermesHub.io</span>
+            <span className="text-xl font-bold text-gradient">MercuryHub</span>
+          </div>
+          <div className="mb-4">
+            <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">
+              Polityka prywatności
+            </Link>
           </div>
           <p className="text-muted-foreground">
-            © 2024 HermesHub. Wszystkie prawa zastrzeżone.
+            © 2024 MercuryHub. Wszystkie prawa zastrzeżone.
           </p>
         </div>
       </footer>
