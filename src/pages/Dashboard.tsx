@@ -3,30 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileJson, FileText, Package, ShoppingCart } from "lucide-react";
+import { Mail, TrendingUp, Share2, Zap, Clock, DollarSign } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { User } from "@supabase/supabase-js";
-import { toast } from "sonner";
-
-interface Purchase {
-  id: string;
-  product_id: string;
-  purchase_type: string;
-  status: string;
-  created_at: string;
-  products: {
-    name: string;
-    description: string;
-    json_file_url: string;
-    instructions_url: string;
-  };
-}
+import automationEmail from "@/assets/automation-email.jpg";
+import automationData from "@/assets/automation-data.jpg";
+import automationSocial from "@/assets/automation-social.jpg";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -34,7 +20,6 @@ const Dashboard = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
-        loadPurchases(session.user.id);
       }
     });
 
@@ -49,134 +34,137 @@ const Dashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const loadPurchases = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("purchases")
-        .select(`
-          *,
-          products (
-            name,
-            description,
-            json_file_url,
-            instructions_url
-          )
-        `)
-        .eq("user_id", userId)
-        .eq("status", "completed")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setPurchases(data || []);
-    } catch (error) {
-      console.error("Error loading purchases:", error);
-      toast.error("Błąd ładowania zakupów");
-    } finally {
-      setLoading(false);
+  const automationExamples = [
+    {
+      icon: Mail,
+      title: "Automatyzacja Email Marketingu",
+      description: "Automatycznie wysyłaj spersonalizowane kampanie email, obsługuj odpowiedzi i segmentuj odbiorców na podstawie ich zachowań.",
+      benefits: [
+        "Oszczędność 15+ godzin tygodniowo",
+        "Wzrost konwersji o 40%",
+        "Automatyczne follow-up"
+      ],
+      image: automationEmail
+    },
+    {
+      icon: TrendingUp,
+      title: "Przetwarzanie i Analiza Danych",
+      description: "Automatyczne zbieranie danych z różnych źródeł, ich przetwarzanie i generowanie raportów analitycznych w czasie rzeczywistym.",
+      benefits: [
+        "Raporty generowane automatycznie",
+        "Redukcja błędów o 95%",
+        "Dostęp do danych 24/7"
+      ],
+      image: automationData
+    },
+    {
+      icon: Share2,
+      title: "Zarządzanie Social Media",
+      description: "Planuj i publikuj posty na wielu platformach jednocześnie, monitoruj engagement i automatycznie odpowiadaj na komentarze.",
+      benefits: [
+        "Oszczędność 20+ godzin miesięcznie",
+        "Konsystentna obecność online",
+        "Zwiększony zasięg o 60%"
+      ],
+      image: automationSocial
     }
-  };
-
-  const handleDownload = (url: string, filename: string) => {
-    window.open(url, "_blank");
-    toast.success(`Pobieranie ${filename}...`);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="container mx-auto px-4 pt-24 text-center">
-          <p className="text-muted-foreground">Ładowanie...</p>
-        </div>
-      </div>
-    );
-  }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            Twój <span className="text-gradient">Dashboard</span>
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Poznaj Moc <span className="text-gradient">Automatyzacji</span>
           </h1>
-          <p className="text-muted-foreground">
-            Witaj, {user?.email}! Zarządzaj swoimi automatyzacjami.
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Automatyzacja to przyszłość biznesu. Odkryj jak technologie AI i workflow mogą uwolnić Twój czas i zwiększyć efektywność.
           </p>
         </div>
 
-        {purchases.length === 0 ? (
-          <Card className="p-12 text-center card-gradient border-primary/20">
-            <div className="inline-flex p-4 rounded-full bg-primary/10 mb-4">
-              <ShoppingCart className="w-12 h-12 text-primary" />
+        {/* Co to są automatyzacje */}
+        <Card className="p-8 mb-12 card-gradient border-primary/20">
+          <div className="flex items-start gap-6 mb-6">
+            <div className="p-4 rounded-xl bg-primary/10">
+              <Zap className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold mb-2">Brak zakupów</h2>
-            <p className="text-muted-foreground mb-6">
-              Jeszcze nie masz żadnych automatyzacji. Czas na pierwszą!
-            </p>
-            <Button onClick={() => navigate("/")} className="glow-effect">
-              Zobacz dostępne automatyzacje
-            </Button>
-          </Card>
-        ) : (
-          <div className="grid gap-6">
-            {purchases.map((purchase) => (
-              <Card key={purchase.id} className="p-6 card-gradient border-primary/20">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10">
-                      <Package className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold mb-1">
-                        {purchase.products.name}
-                      </h3>
-                      <p className="text-muted-foreground text-sm mb-2">
-                        {purchase.products.description}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          purchase.purchase_type === 'premium'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-secondary text-secondary-foreground'
-                        }`}>
-                          {purchase.purchase_type === 'premium' ? 'Premium' : 'Basic'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(purchase.created_at).toLocaleDateString('pl-PL')}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+            <div>
+              <h2 className="text-2xl font-bold mb-3">Czym są automatyzacje?</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Automatyzacje biznesowe to inteligentne przepływy pracy, które wykonują powtarzalne zadania bez Twojego udziału. 
+                Dzięki platformom takim jak n8n, Make czy Zapier możesz połączyć różne narzędzia i systemy, tworząc kompleksowe rozwiązania.
+              </p>
+              <div className="grid md:grid-cols-3 gap-4 mt-6">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+                  <Clock className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span className="text-sm">Oszczędność czasu</span>
                 </div>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+                  <DollarSign className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span className="text-sm">Redukcja kosztów</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+                  <TrendingUp className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span className="text-sm">Wzrost wydajności</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
 
-                <div className="flex gap-3 flex-wrap">
-                  <Button
-                    variant="outline"
-                    onClick={() => handleDownload(purchase.products.json_file_url, "automation.json")}
-                  >
-                    <FileJson className="w-4 h-4 mr-2" />
-                    Pobierz JSON
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleDownload(purchase.products.instructions_url, "instructions.pdf")}
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    Pobierz instrukcję
-                  </Button>
-                  {purchase.purchase_type === 'premium' && (
-                    <Button className="glow-effect">
-                      <Download className="w-4 h-4 mr-2" />
-                      Umów wdrożenie
-                    </Button>
-                  )}
+        {/* Przykłady automatyzacji */}
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold mb-8 text-center">
+            Przykłady Automatyzacji
+          </h2>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {automationExamples.map((example, index) => (
+              <Card key={index} className="overflow-hidden card-gradient border-primary/20 hover:border-primary/40 transition-all duration-300">
+                <div className="aspect-video overflow-hidden">
+                  <img 
+                    src={example.image} 
+                    alt={example.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <example.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold">{example.title}</h3>
+                  </div>
+                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                    {example.description}
+                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-primary mb-2">Korzyści:</p>
+                    {example.benefits.map((benefit, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <span className="text-muted-foreground">{benefit}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </Card>
             ))}
           </div>
-        )}
+        </div>
+
+        {/* CTA */}
+        <Card className="p-8 text-center card-gradient border-primary/20">
+          <h2 className="text-2xl font-bold mb-3">Gotowy na automatyzację?</h2>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            Przejrzyj naszą ofertę gotowych automatyzacji i zacznij oszczędzać czas już dziś. 
+            Każda automatyzacja zawiera szczegółową instrukcję i pliki gotowe do importu.
+          </p>
+          <Button onClick={() => navigate("/marketplace")} className="glow-effect" size="lg">
+            Zobacz dostępne automatyzacje
+          </Button>
+        </Card>
       </div>
     </div>
   );
