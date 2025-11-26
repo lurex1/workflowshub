@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, User } from "lucide-react";
-import logo from "@/assets/mercuryhub-logo.png";
+import logo from "@/assets/mercuryhub-logo-new.png";
 
 export const Navbar = () => {
   const { user, hasRole, signOut } = useAuth();
