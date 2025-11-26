@@ -66,26 +66,22 @@ const Index = () => {
           
           <div className="max-w-3xl mx-auto">
             <div 
-              className="relative rounded-2xl p-8 transform-gpu transition-all duration-500 hover:scale-[1.02]"
+              className="relative rounded-2xl p-8"
               style={{
-                background: 'linear-gradient(135deg, hsla(220, 80%, 15%, 0.6), hsla(0, 75%, 15%, 0.4))',
+                background: 'linear-gradient(135deg, hsla(220, 80%, 15%, 0.4), hsla(0, 75%, 15%, 0.3))',
                 backdropFilter: 'blur(20px)',
                 boxShadow: `
-                  0 25px 60px -15px hsla(220, 80%, 45%, 0.4),
-                  0 15px 40px -10px hsla(0, 75%, 55%, 0.3),
-                  inset 0 1px 0 0 hsla(220, 80%, 70%, 0.1),
-                  0 0 80px hsla(220, 80%, 45%, 0.2)
+                  0 20px 50px -15px hsla(220, 80%, 45%, 0.3),
+                  0 10px 30px -10px hsla(0, 75%, 55%, 0.2),
+                  inset 0 1px 0 0 hsla(220, 80%, 70%, 0.08)
                 `,
-                border: '1px solid hsla(220, 80%, 45%, 0.3)',
+                border: '1px solid hsla(220, 80%, 45%, 0.2)',
               }}
             >
               <img 
                 src={platformFlow} 
                 alt="Platform Flow Diagram" 
-                className="w-full h-auto rounded-lg"
-                style={{
-                  filter: 'drop-shadow(0 10px 30px hsla(220, 80%, 45%, 0.3))',
-                }}
+                className="w-full h-auto rounded-lg opacity-90"
               />
             </div>
           </div>
