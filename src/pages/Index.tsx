@@ -65,25 +65,11 @@ const Index = () => {
           </h2>
           
           <div className="max-w-3xl mx-auto">
-            <div 
-              className="relative rounded-2xl p-8"
-              style={{
-                background: 'linear-gradient(135deg, hsla(220, 80%, 15%, 0.4), hsla(0, 75%, 15%, 0.3))',
-                backdropFilter: 'blur(20px)',
-                boxShadow: `
-                  0 20px 50px -15px hsla(220, 80%, 45%, 0.3),
-                  0 10px 30px -10px hsla(0, 75%, 55%, 0.2),
-                  inset 0 1px 0 0 hsla(220, 80%, 70%, 0.08)
-                `,
-                border: '1px solid hsla(220, 80%, 45%, 0.2)',
-              }}
-            >
-              <img 
-                src={platformFlow} 
-                alt="Platform Flow Diagram" 
-                className="w-full h-auto rounded-lg opacity-90"
-              />
-            </div>
+            <img 
+              src={platformFlow} 
+              alt="Platform Flow Diagram" 
+              className="w-full h-auto"
+            />
           </div>
         </div>
       </section>
