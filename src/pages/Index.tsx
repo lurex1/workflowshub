@@ -47,27 +47,41 @@ const Index = () => {
       </section>
 
       {/* Platform Flow Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 relative">
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `url(${marketplaceHero})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
+      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
         <div className="container mx-auto relative z-10">
-          <h2 className="text-4xl font-bold text-center mb-12">
+          <h2 className="text-4xl font-bold text-center mb-16">
             Jak działa <span className="text-gradient">nasza platforma?</span>
           </h2>
           
-          <div className="max-w-5xl mx-auto mb-16 rounded-xl overflow-hidden border border-primary/20 shadow-2xl bg-background/80 backdrop-blur-sm">
-            <img 
-              src={platformFlow} 
-              alt="Platform Flow Diagram" 
-              className="w-full h-auto"
-            />
+          <div className="max-w-3xl mx-auto perspective-1000">
+            <div 
+              className="relative rounded-2xl overflow-hidden transform-gpu transition-transform duration-300 hover:scale-[1.02]"
+              style={{
+                boxShadow: `
+                  0 20px 50px -12px hsla(var(--primary), 0.3),
+                  0 10px 30px -8px hsla(var(--accent), 0.2),
+                  0 0 60px hsla(var(--primary), 0.15)
+                `,
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 pointer-events-none" />
+              <div 
+                className="relative border-2 border-primary/30 rounded-2xl overflow-hidden bg-card/90 backdrop-blur-sm p-1"
+                style={{
+                  background: 'linear-gradient(135deg, hsla(var(--card), 0.9), hsla(var(--card), 0.7))',
+                }}
+              >
+                <img 
+                  src={platformFlow} 
+                  alt="Platform Flow Diagram" 
+                  className="w-full h-auto rounded-xl"
+                  style={{
+                    filter: 'brightness(1.05) contrast(1.05)',
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
