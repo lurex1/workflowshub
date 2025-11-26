@@ -12,8 +12,8 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
-            <div className="px-4 py-2 rounded-lg" style={{ backgroundColor: 'rgba(240, 240, 240, 0.95)' }}>
-              <img src={logo} alt="MercuryHub" className="h-12" />
+            <div className="px-3 py-1.5 rounded-lg bg-card/50 border border-border/50">
+              <img src={logo} alt="MercuryHub" className="h-10" />
             </div>
           </Link>
 
