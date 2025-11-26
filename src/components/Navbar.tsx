@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, User } from "lucide-react";
-import logo from "@/assets/mercuryhub-logo-full.png";
+import logo from "@/assets/mercuryhub-logo.png";
 
 export const Navbar = () => {
   const { user, hasRole, signOut } = useAuth();
@@ -12,9 +12,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
-            <div className="px-3 py-1.5 rounded-lg bg-card/50 border border-border/50">
-              <img src={logo} alt="MercuryHub" className="h-10" />
-            </div>
+            <img src={logo} alt="MercuryHub" className="h-8" />
           </Link>
 
           <div className="flex items-center gap-4">
