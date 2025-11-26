@@ -47,40 +47,46 @@ const Index = () => {
       </section>
 
       {/* Platform Flow Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+      <section 
+        className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, hsl(220 80% 8%) 0%, hsl(220 60% 12%) 50%, hsl(0 75% 10%) 100%)',
+        }}
+      >
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, hsl(220 80% 45%) 1px, transparent 0)`,
+            backgroundSize: '40px 40px',
+          }} />
+        </div>
         <div className="container mx-auto relative z-10">
           <h2 className="text-4xl font-bold text-center mb-16">
             Jak działa <span className="text-gradient">nasza platforma?</span>
           </h2>
           
-          <div className="max-w-3xl mx-auto perspective-1000">
+          <div className="max-w-3xl mx-auto">
             <div 
-              className="relative rounded-2xl overflow-hidden transform-gpu transition-transform duration-300 hover:scale-[1.02]"
+              className="relative rounded-2xl p-8 transform-gpu transition-all duration-500 hover:scale-[1.02]"
               style={{
+                background: 'linear-gradient(135deg, hsla(220, 80%, 15%, 0.6), hsla(0, 75%, 15%, 0.4))',
+                backdropFilter: 'blur(20px)',
                 boxShadow: `
-                  0 20px 50px -12px hsla(var(--primary), 0.3),
-                  0 10px 30px -8px hsla(var(--accent), 0.2),
-                  0 0 60px hsla(var(--primary), 0.15)
+                  0 25px 60px -15px hsla(220, 80%, 45%, 0.4),
+                  0 15px 40px -10px hsla(0, 75%, 55%, 0.3),
+                  inset 0 1px 0 0 hsla(220, 80%, 70%, 0.1),
+                  0 0 80px hsla(220, 80%, 45%, 0.2)
                 `,
+                border: '1px solid hsla(220, 80%, 45%, 0.3)',
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 pointer-events-none" />
-              <div 
-                className="relative border-2 border-primary/30 rounded-2xl overflow-hidden bg-card/90 backdrop-blur-sm p-1"
+              <img 
+                src={platformFlow} 
+                alt="Platform Flow Diagram" 
+                className="w-full h-auto rounded-lg"
                 style={{
-                  background: 'linear-gradient(135deg, hsla(var(--card), 0.9), hsla(var(--card), 0.7))',
+                  filter: 'drop-shadow(0 10px 30px hsla(220, 80%, 45%, 0.3))',
                 }}
-              >
-                <img 
-                  src={platformFlow} 
-                  alt="Platform Flow Diagram" 
-                  className="w-full h-auto rounded-xl"
-                  style={{
-                    filter: 'brightness(1.05) contrast(1.05)',
-                  }}
-                />
-              </div>
+              />
             </div>
           </div>
         </div>
