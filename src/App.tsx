@@ -11,6 +11,7 @@ import Marketplace from "./pages/Marketplace";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
 import StripeOnboarding from "./pages/StripeOnboarding";
 import Privacy from "./pages/Privacy";
+import AIModelsGuide from "./pages/AIModelsGuide";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/developer" element={<DeveloperDashboard />} />
             <Route path="/stripe-onboarding" element={<StripeOnboarding />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/ai-models" element={<AIModelsGuide />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

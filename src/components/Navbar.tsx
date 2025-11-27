@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Brain } from "lucide-react";
 import logo from "@/assets/mercuryhub-logo-new.png";
 
 export const Navbar = () => {
@@ -16,6 +16,12 @@ export const Navbar = () => {
           </Link>
 
           <div className="flex items-center gap-4">
+            <Link to="/ai-models">
+              <Button variant="outline" className="border-primary/50 hover:bg-primary/10">
+                <Brain className="h-4 w-4 mr-2" />
+                Modele AI
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Link to="/marketplace">
