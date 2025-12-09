@@ -15,7 +15,7 @@ const Privacy = () => {
           <Card className="p-6 md:p-8 card-gradient border-primary/20">
             <div className="prose prose-lg max-w-none text-foreground">
               <p className="text-muted-foreground mb-6">
-                Poniższa Polityka Prywatności określa zasady zapisywania i uzyskiwania dostępu do danych na Urządzeniach Użytkowników korzystających z serwisu MercuryHub (marketplace automatyzacji, na którym developerzy wystawiają swoje automatyzacje na sprzedaż) do celów świadczenia usług drogą elektroniczną przez Administratora oraz zasady gromadzenia i przetwarzania danych osobowych Użytkowników, które zostały podane przez nich osobiście i dobrowolnie za pośrednictwem narzędzi dostępnych w Serwisie.
+                Poniższa Polityka Prywatności określa zasady zapisywania i uzyskiwania dostępu do danych na Urządzeniach Użytkowników korzystających z serwisu Workflows Hub (marketplace automatyzacji, na którym developerzy wystawiają swoje automatyzacje na sprzedaż) do celów świadczenia usług drogą elektroniczną przez Administratora oraz zasady gromadzenia i przetwarzania danych osobowych Użytkowników, które zostały podane przez nich osobiście i dobrowolnie za pośrednictwem narzędzi dostępnych w Serwisie.
               </p>
               
               <p className="text-sm text-muted-foreground mb-8">
@@ -25,7 +25,7 @@ const Privacy = () => {
               <section className="mb-8">
                 <h2 className="text-2xl font-bold mb-4 text-foreground">§1 Definicje</h2>
                 <div className="space-y-3 text-muted-foreground">
-                  <p><strong className="text-foreground">Serwis</strong> – serwis internetowy prowadzony przez Administratora pod adresem: mercuryhub.pl oraz ewentualnie innymi domenami/subdomenami powiązanymi (np. mercuryhub.com) służący jako marketplace automatyzacji, w ramach którego developerzy mogą oferować swoje automatyzacje na sprzedaż, a Użytkownicy mogą je przeglądać, kupować i z nich korzystać.</p>
+                  <p><strong className="text-foreground">Serwis</strong> – serwis internetowy prowadzony przez Administratora pod adresem: workflowshub.pl oraz ewentualnie innymi domenami/subdomenami powiązanymi (np. workflowshub.com) służący jako marketplace automatyzacji, w ramach którego developerzy mogą oferować swoje automatyzacje na sprzedaż, a Użytkownicy mogą je przeglądać, kupować i z nich korzystać.</p>
                   
                   <p><strong className="text-foreground">Serwis zewnętrzny</strong> – serwisy internetowe partnerów, usługodawców lub usługobiorców współpracujących z Administratorem (np. systemy płatności, narzędzia analityczne, platformy mailingowe, narzędzia automatyzacji).</p>
                   
@@ -85,9 +85,9 @@ const Privacy = () => {
                 <div className="space-y-3 text-muted-foreground">
                   <p><strong className="text-foreground">Niezbędne/techniczne</strong> – zapewnienie prawidłowego działania Serwisu (podstawowe funkcje, logowanie, utrzymanie sesji, obsługa panelu developera i kupującego, koszyk, proces zakupowy).</p>
                   
-                  <p><strong className="text-foreground">Analityczne/statystyczne</strong> – pomiar i analiza ruchu oraz korzystania z Serwisu (np. Google Analytics lub inne narzędzia analityczne), optymalizacja działania Serwisu, poprawa użyteczności platformy MercuryHub dla developerów i klientów.</p>
+                  <p><strong className="text-foreground">Analityczne/statystyczne</strong> – pomiar i analiza ruchu oraz korzystania z Serwisu (np. Google Analytics lub inne narzędzia analityczne), optymalizacja działania Serwisu, poprawa użyteczności platformy Workflows Hub dla developerów i klientów.</p>
                   
-                  <p><strong className="text-foreground">Marketingowe</strong> – remarketing i dopasowanie treści reklam (np. Meta Pixel, Google Ads, LinkedIn Ads, inne systemy reklamowe), w tym wyświetlanie reklam MercuryHub i ofert automatyzacji poza Serwisem.</p>
+                  <p><strong className="text-foreground">Marketingowe</strong> – remarketing i dopasowanie treści reklam (np. Meta Pixel, Google Ads, LinkedIn Ads, inne systemy reklamowe), w tym wyświetlanie reklam Workflows Hub i ofert automatyzacji poza Serwisem.</p>
                   
                   <p><strong className="text-foreground">Funkcjonalne</strong> – osadzanie treści zewnętrznych (np. filmy instruktażowe YouTube, wbudowane formularze, chaty, kalendarze do umawiania konsultacji).</p>
                 </div>
@@ -146,7 +146,7 @@ const Privacy = () => {
               <section className="mb-8">
                 <h2 className="text-2xl font-bold mb-4 text-foreground">§9 Dostęp do danych przez podmioty trzecie</h2>
                 <p className="text-muted-foreground mb-3">
-                  Co do zasady odbiorcą danych jest Administrator. Dane mogą być udostępniane lub powierzane podmiotom świadczącym na rzecz Administratora usługi niezbędne do funkcjonowania Serwisu MercuryHub, w tym w szczególności:
+                  Co do zasady odbiorcą danych jest Administrator. Dane mogą być udostępniane lub powierzane podmiotom świadczącym na rzecz Administratora usługi niezbędne do funkcjonowania Serwisu Workflows Hub, w tym w szczególności:
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                   <li>dostawcy hostingu i infrastruktury serwerowej (np. Vercel, inni dostawcy chmury/hostingu);</li>
@@ -164,7 +164,7 @@ const Privacy = () => {
                   Dane nie są sprzedawane podmiotom trzecim. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (np. do USA) w związku z korzystaniem z narzędzi dostawców mających serwery lub siedziby poza EOG (np. Google, Meta, narzędzia mailingowe, dostawcy hostingu). W takim przypadku Administrator zapewnia stosowanie legalnych mechanizmów przekazywania danych, zgodnych z RODO (np. Standardowe Klauzule Umowne, inne odpowiednie zabezpieczenia).
                 </p>
                 <p className="text-muted-foreground">
-                  Dane mogą być przetwarzane w sposób zautomatyzowany, w tym profilowane dla celów analitycznych i marketingowych/remarketingowych (np. dobór reklam MercuryHub lub ofert automatyzacji do zainteresowań Użytkownika na podstawie jego aktywności). Decyzje podejmowane na tej podstawie nie wywołują wobec Użytkownika skutków prawnych i nie stanowią zautomatyzowanego podejmowania decyzji w rozumieniu art. 22 RODO.
+                  Dane mogą być przetwarzane w sposób zautomatyzowany, w tym profilowane dla celów analitycznych i marketingowych/remarketingowych (np. dobór reklam Workflows Hub lub ofert automatyzacji do zainteresowań Użytkownika na podstawie jego aktywności). Decyzje podejmowane na tej podstawie nie wywołują wobec Użytkownika skutków prawnych i nie stanowią zautomatyzowanego podejmowania decyzji w rozumieniu art. 22 RODO.
                 </p>
               </section>
 

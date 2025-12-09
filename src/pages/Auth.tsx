@@ -195,7 +195,7 @@ const Auth = () => {
           <div className="p-2 rounded-lg bg-primary/10 glow-effect">
             <Zap className="w-6 h-6 text-primary" />
           </div>
-          <span className="text-2xl font-bold text-gradient">MercuryHub</span>
+          <span className="text-2xl font-bold text-gradient">Workflows Hub</span>
         </Link>
 
         <h2 className="text-3xl font-bold mb-2 text-center">
