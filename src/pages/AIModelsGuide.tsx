@@ -260,7 +260,7 @@ const AIModelsGuide = () => {
       <footer className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground py-8 mt-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm">
-            © 2024 MercuryHub. Wszystkie prawa zastrzeżone. | <a href="/privacy" className="underline hover:text-primary-foreground/80">Polityka prywatności</a>
+            © 2024 Workflows Hub. Wszystkie prawa zastrzeżone. | <a href="/privacy" className="underline hover:text-primary-foreground/80">Polityka prywatności</a>
           </p>
         </div>
       </footer>
